@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - WoolTech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-white: #F8F6F2;
+            --oat: #E8E0D6;
+            --mist-grey: #D4C8BC;
+            --soft-taupe: #C4B5A0;
+            --sage-green: #A8B5A0;
+            --warm-charcoal: #4A453E;
+            --cream: #FEFCF8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--warm-white);
+            color: var(--warm-charcoal);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--warm-charcoal) 0%, var(--soft-taupe) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background-color: var(--warm-charcoal);
+            color: var(--cream);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 69, 62, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--oat);
+            color: var(--warm-charcoal);
+            border: 2px solid var(--mist-grey);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--mist-grey);
+            transform: translateY(-1px);
+        }
+        
+        .cart-item {
+            background: var(--warm-white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(212, 200, 188, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-btn {
+            background-color: var(--oat);
+            color: var(--warm-charcoal);
+            border: 1px solid var(--mist-grey);
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--mist-grey);
+        }
+        
+        .quantity-input {
+            background-color: var(--warm-white);
+            border: 1px solid var(--mist-grey);
+            text-align: center;
+        }
+        
+        .cart-badge {
+            background-color: var(--sage-green);
+            color: var(--cream);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--sage-green);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--sage-green);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .form-input {
+            background-color: var(--warm-white);
+            border: 2px solid var(--mist-grey);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 3px rgba(168, 181, 160, 0.1);
+        }
+        
+        .checkout-step {
+            background-color: var(--oat);
+            color: var(--warm-charcoal);
+            transition: all 0.3s ease;
+        }
+        
+        .checkout-step.active {
+            background-color: var(--sage-green);
+            color: var(--cream);
+        }
+        
+        .checkout-step.completed {
+            background-color: var(--soft-taupe);
+            color: var(--cream);
+        }
+        
+        .success-animation {
+            animation: successPulse 2s ease-in-out;
+        }
+        
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="text-2xl font-bold gradient-text">WoolTech</a>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="index.html" class="nav-link text-sm font-medium">Home</a>
+                        <a href="products.html" class="nav-link text-sm font-medium">Products</a>
+                        <a href="index.html#story" class="nav-link text-sm font-medium">Our Story</a>
+                        <a href="index.html#sustainability" class="nav-link text-sm font-medium">Sustainability</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="cart-btn" class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0V19a2 2 0 002 2h7a2 2 0 002-2v-4"></path>
+                        </svg>
+                        <span id="cart-count" class="cart-badge absolute -top-2 -right-2 w-5 h-5 rounded-full text-xs flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-warm-white to-oat">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl lg:text-5xl font-light mb-4 reveal-element">Shopping Cart</h1>
+                <p class="text-gray-600 reveal-element">Review your items and complete your order</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Progress -->
+    <section class="py-8 bg-white border-b">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="flex items-center justify-center space-x-4">
+                <div class="checkout-step active px-6 py-3 rounded-lg font-medium text-sm">Cart Review</div>
+                <div class="w-8 h-0.5 bg-gray-300"></div>
+                <div class="checkout-step px-6 py-3 rounded-lg font-medium text-sm">Shipping Info</div>
+                <div class="w-8 h-0.5 bg-gray-300"></div>
+                <div class="checkout-step px-6 py-3 rounded-lg font-medium text-sm">Payment</div>
+                <div class="w-8 h-0.5 bg-gray-300"></div>
+                <div class="checkout-step px-6 py-3 rounded-lg font-medium text-sm">Confirmation</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <div id="cart-content" class="grid lg:grid-cols-3 gap-12">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-2xl font-light">Your Items</h2>
+                        <button id="clear-cart" class="text-gray-500 hover:text-red-500 transition-colors">
+                            Clear All
+                        </button>
+                    </div>
+                    
+                    <div id="cart-items-list" class="space-y-6">
+                        <!-- Cart items will be populated here -->
+                    </div>
+                    
+                    <div id="empty-cart" class="text-center py-16 hidden">
+                        <svg class="w-24 h-24 mx-auto text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0V19a2 2 0 002 2h7a2 2 0 002-2v-4"></path>
+                        </svg>
+                        <h3 class="text-xl font-medium mb-2">Your cart is empty</h3>
+                        <p class="text-gray-600 mb-6">Add some amazing wool sneakers to get started</p>
+                        <a href="products.html" class="btn-primary px-6 py-3 rounded-lg font-medium inline-block">
+                            Shop Now
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-lg p-8 sticky top-32">
+                        <h3 class="text-xl font-medium mb-6">Order Summary</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between">
+                                <span>Subtotal</span>
+                                <span id="subtotal">$0.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Shipping</span>
+                                <span id="shipping">Free</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Tax</span>
+                                <span id="tax">$0.00</span>
+                            </div>
+                            <div class="border-t pt-4">
+                                <div class="flex justify-between text-lg font-medium">
+                                    <span>Total</span>
+                                    <span id="total">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <input type="text" placeholder="Promo code" 
+                                   class="form-input w-full px-4 py-3 text-sm">
+                        </div>
+                        
+                        <button id="checkout-btn" class="btn-primary w-full py-4 rounded-lg font-medium mb-4">
+                            Proceed to Checkout
+                        </button>
+                        
+                        <a href="products.html" class="btn-secondary w-full py-3 rounded-lg font-medium text-center block">
+                            Continue Shopping
+                        </a>
+                        
+                        <div class="mt-6 pt-6 border-t">
+                            <div class="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Free shipping on orders over $100</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>30-day return policy</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Sustainably sourced materials</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Form Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black bg-opacity-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-light">Checkout</h3>
+                    <button id="close-checkout" class="p-2 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form id="checkout-form" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">First Name</label>
+                            <input type="text" required class="form-input w-full px-4 py-3">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Last Name</label>
+                            <input type="text" required class="form-input w-full px-4 py-3">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" required class="form-input w-full px-4 py-3">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Phone</label>
+                        <input type="tel" required class="form-input w-full px-4 py-3">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Address</label>
+                        <input type="text" required class="form-input w-full px-4 py-3">
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">City</label>
+                            <input type="text" required class="form-input w-full px-4 py-3">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">State</label>
+                            <select required class="form-input w-full px-4 py-3">
+                                <option value="">Select State</option>
+                                <option value="CA">California</option>
+                                <option value="NY">New York</option>
+                                <option value="TX">Texas</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">ZIP Code</label>
+                            <input type="text" required class="form-input w-full px-4 py-3">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-medium mb-4">Payment Method</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="payment" value="card" checked class="text-sage-green">
+                                <span>Credit/Debit Card</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="payment" value="paypal" class="text-sage-green">
+                                <span>PayPal</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="payment" value="apple" class="text-sage-green">
+                                <span>Apple Pay</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button type="button" id="cancel-checkout" class="btn-secondary flex-1 py-3 rounded-lg font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary flex-1 py-3 rounded-lg font-medium">
+                            Place Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black bg-opacity-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center success-animation">
+            <div class="w-20 h-20 bg-sage-green rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-medium mb-4">Order Confirmed!</h3>
+            <p class="text-gray-600 mb-6">Thank you for your purchase. You'll receive a confirmation email shortly.</p>
+            <button id="continue-shopping" class="btn-primary px-6 py-3 rounded-lg font-medium">
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

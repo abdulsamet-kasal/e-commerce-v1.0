@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WoolTech - Natural Wool Meets Urban Tech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-white: #F8F6F2;
+            --oat: #E8E0D6;
+            --mist-grey: #D4C8BC;
+            --soft-taupe: #C4B5A0;
+            --sage-green: #A8B5A0;
+            --warm-charcoal: #4A453E;
+            --cream: #FEFCF8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--warm-white);
+            color: var(--warm-charcoal);
+            overflow-x: hidden;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, var(--warm-white) 0%, var(--oat) 50%, var(--mist-grey) 100%);
+            position: relative;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('resources/wool-texture-bg.jpg') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--warm-charcoal) 0%, var(--soft-taupe) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background-color: var(--warm-charcoal);
+            color: var(--cream);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 69, 62, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--oat);
+            color: var(--warm-charcoal);
+            border: 2px solid var(--mist-grey);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--mist-grey);
+            transform: translateY(-1px);
+        }
+        
+        .product-card {
+            background: var(--warm-white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(212, 200, 188, 0.15);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(212, 200, 188, 0.25);
+        }
+        
+        .product-image {
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .cart-badge {
+            background-color: var(--sage-green);
+            color: var(--cream);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--sage-green);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--sage-green);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .wool-pattern {
+            background-image: radial-gradient(circle at 25% 25%, var(--mist-grey) 2px, transparent 2px),
+                              radial-gradient(circle at 75% 75%, var(--soft-taupe) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-2xl font-bold gradient-text">WoolTech</h1>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="#home" class="nav-link text-sm font-medium">Home</a>
+                        <a href="products.html" class="nav-link text-sm font-medium">Products</a>
+                        <a href="#story" class="nav-link text-sm font-medium">Our Story</a>
+                        <a href="#sustainability" class="nav-link text-sm font-medium">Sustainability</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="cart-btn" class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0V19a2 2 0 002 2h7a2 2 0 002-2v-4"></path>
+                        </svg>
+                        <span id="cart-count" class="cart-badge absolute -top-2 -right-2 w-5 h-5 rounded-full text-xs flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center pt-20">
+        <div class="hero-content max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <h2 class="text-5xl lg:text-7xl font-light leading-tight">
+                    <span class="block reveal-element" data-splitting>Natural Wool</span>
+                    <span class="block reveal-element gradient-text" data-splitting>Meets Urban Tech</span>
+                </h2>
+                <p class="text-lg text-gray-600 leading-relaxed reveal-element max-w-lg">
+                    Experience the perfect fusion of nature's finest materials and cutting-edge technology. 
+                    Our wool sneakers deliver unmatched comfort, sustainability, and style for the modern urban explorer.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 reveal-element">
+                    <a href="products.html" class="btn-primary px-8 py-4 rounded-lg font-medium text-center">
+                        Shop Collection
+                    </a>
+                    <a href="#story" class="btn-secondary px-8 py-4 rounded-lg font-medium text-center">
+                        Our Story
+                    </a>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="floating-element">
+                    <img src="resources/hero-sneakers.jpg" alt="Premium Wool Sneakers" 
+                         class="w-full h-auto rounded-2xl shadow-2xl">
+                </div>
+                <div class="absolute -top-4 -right-4 w-32 h-32 wool-pattern rounded-full"></div>
+                <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-gradient-to-br from-sage-green to-mist-grey rounded-full opacity-60"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="text-4xl font-light mb-4 reveal-element">Featured Collection</h3>
+                <p class="text-gray-600 max-w-2xl mx-auto reveal-element">
+                    Discover our most popular wool sneakers, crafted with premium merino wool and innovative urban technology.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product 1 -->
+                <div class="product-card reveal-element">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="https://kimi-web-img.moonshot.cn/img/www.allbirds.com/1307ccb9b365c4f36360349b84e0ba64c00616c7.jpg" 
+                             alt="Urban Wooler - Classic" class="product-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-medium mb-2">Urban Wooler - Classic</h4>
+                        <p class="text-gray-600 text-sm mb-4">Premium merino wool with urban tech sole</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-light">$135</span>
+                            <button class="add-to-cart btn-primary px-4 py-2 rounded-lg text-sm" 
+                                    data-product='{"id": 1, "name": "Urban Wooler - Classic", "price": 135, "image": "https://kimi-web-img.moonshot.cn/img/www.allbirds.com/1307ccb9b365c4f36360349b84e0ba64c00616c7.jpg"}'>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card reveal-element">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="https://kimi-web-img.moonshot.cn/img/thesavvybackpacker.com/02029035491fda6d80681d23817dcefeb0dc77ef.jpg" 
+                             alt="Trail Runner SWT" class="product-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-medium mb-2">Trail Runner SWT</h4>
+                        <p class="text-gray-600 text-sm mb-4">All-terrain wool performance</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-light">$115</span>
+                            <button class="add-to-cart btn-primary px-4 py-2 rounded-lg text-sm" 
+                                    data-product='{"id": 2, "name": "Trail Runner SWT", "price": 115, "image": "https://kimi-web-img.moonshot.cn/img/thesavvybackpacker.com/02029035491fda6d80681d23817dcefeb0dc77ef.jpg"}'>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card reveal-element">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="https://kimi-web-img.moonshot.cn/img/makemesustainable.com/f622b753f6e3a6765628a50eedb4d4e5acf8bd55.jpg" 
+                             alt="Merino Knit Pro" class="product-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-medium mb-2">Merino Knit Pro</h4>
+                        <p class="text-gray-600 text-sm mb-4">Lightweight comfort technology</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-light">$140</span>
+                            <button class="add-to-cart btn-primary px-4 py-2 rounded-lg text-sm" 
+                                    data-product='{"id": 3, "name": "Merino Knit Pro", "price": 140, "image": "https://kimi-web-img.moonshot.cn/img/makemesustainable.com/f622b753f6e3a6765628a50eedb4d4e5acf8bd55.jpg"}'>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="products.html" class="btn-secondary px-8 py-4 rounded-lg font-medium inline-block">
+                    View All Products
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Story -->
+    <section id="story" class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal-element">
+                    <img src="resources/lifestyle-urban.jpg" alt="Urban Lifestyle" 
+                         class="w-full h-auto rounded-2xl shadow-xl">
+                </div>
+                <div class="space-y-8">
+                    <h3 class="text-4xl font-light reveal-element">Crafted for Comfort,<br>Designed for Life</h3>
+                    <p class="text-gray-600 leading-relaxed reveal-element">
+                        Our journey began with a simple question: Why can't sustainable materials feel as good as they look? 
+                        We partnered with nature's finest merino wool farmers and urban technology innovators to create 
+                        sneakers that honor both comfort and conscience.
+                    </p>
+                    <p class="text-gray-600 leading-relaxed reveal-element">
+                        Every pair represents our commitment to reducing environmental impact while elevating everyday comfort. 
+                        From the mountain ranges where our wool is sourced to the city streets where our shoes make their mark, 
+                        we're bridging the gap between natural luxury and modern functionality.
+                    </p>
+                    <div class="reveal-element">
+                        <a href="products.html" class="btn-primary px-6 py-3 rounded-lg font-medium inline-block">
+                            Explore Our Craft
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sustainability Metrics -->
+    <section id="sustainability" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="text-4xl font-light mb-4 reveal-element">Sustainable by Design</h3>
+                <p class="text-gray-600 max-w-2xl mx-auto reveal-element">
+                    Our commitment to sustainability goes beyond materials. Every decision is made with environmental impact in mind.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center reveal-element">
+                    <div class="w-20 h-20 bg-gradient-to-br from-sage-green to-mist-grey rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-medium mb-2">65% Less CO₂</h4>
+                    <p class="text-gray-600">Compared to traditional synthetic sneakers</p>
+                </div>
+                
+                <div class="text-center reveal-element">
+                    <div class="w-20 h-20 bg-gradient-to-br from-sage-green to-mist-grey rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-medium mb-2">97% Plastic-Free</h4>
+                    <p class="text-gray-600">Natural and renewable materials</p>
+                </div>
+                
+                <div class="text-center reveal-element">
+                    <div class="w-20 h-20 bg-gradient-to-br from-sage-green to-mist-grey rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-medium mb-2">100% Renewable</h4>
+                    <p class="text-gray-600">Merino wool and natural rubber</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h3 class="text-3xl font-light mb-4 reveal-element">Stay Connected</h3>
+            <p class="text-gray-600 mb-8 reveal-element">
+                Be the first to know about new products, sustainability initiatives, and exclusive offers.
+            </p>
+            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto reveal-element">
+                <input type="email" placeholder="Enter your email" 
+                       class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-green">
+                <button type="submit" class="btn-primary px-6 py-3 rounded-lg font-medium">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-warm-charcoal text-cream py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h4 class="text-2xl font-bold gradient-text mb-4">WoolTech</h4>
+            <p class="text-gray-400 mb-6">Natural wool meets urban tech</p>
+            <p class="text-sm text-gray-500">
+                © 2025 WoolTech. Crafted with care for people and planet.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-medium">Shopping Cart</h3>
+                <button id="close-cart" class="p-2 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+            <p class="text-gray-500 text-center">Your cart is empty</p>
+        </div>
+        <div class="border-t p-6">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-lg font-medium">Total:</span>
+                <span id="cart-total" class="text-xl font-bold">$0</span>
+            </div>
+            <a href="cart.html" class="btn-primary w-full py-3 rounded-lg font-medium text-center block">
+                Checkout
+            </a>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <script src="main.js"></script>
+</body>
+</html>

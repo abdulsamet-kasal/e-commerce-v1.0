@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - WoolTech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-white: #F8F6F2;
+            --oat: #E8E0D6;
+            --mist-grey: #D4C8BC;
+            --soft-taupe: #C4B5A0;
+            --sage-green: #A8B5A0;
+            --warm-charcoal: #4A453E;
+            --cream: #FEFCF8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--warm-white);
+            color: var(--warm-charcoal);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--warm-charcoal) 0%, var(--soft-taupe) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background-color: var(--warm-charcoal);
+            color: var(--cream);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 69, 62, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--oat);
+            color: var(--warm-charcoal);
+            border: 2px solid var(--mist-grey);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--mist-grey);
+            transform: translateY(-1px);
+        }
+        
+        .product-card {
+            background: var(--warm-white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(212, 200, 188, 0.15);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(212, 200, 188, 0.25);
+        }
+        
+        .product-image {
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .filter-btn {
+            background-color: var(--oat);
+            color: var(--warm-charcoal);
+            border: 2px solid var(--mist-grey);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--sage-green);
+            color: var(--cream);
+            border-color: var(--sage-green);
+        }
+        
+        .filter-btn:hover {
+            background-color: var(--mist-grey);
+        }
+        
+        .filter-btn.active:hover {
+            background-color: var(--sage-green);
+        }
+        
+        .cart-badge {
+            background-color: var(--sage-green);
+            color: var(--cream);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--sage-green);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--sage-green);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background: var(--warm-white);
+            border-radius: 16px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .size-option {
+            background-color: var(--oat);
+            border: 2px solid var(--mist-grey);
+            transition: all 0.3s ease;
+        }
+        
+        .size-option:hover {
+            background-color: var(--mist-grey);
+        }
+        
+        .size-option.selected {
+            background-color: var(--sage-green);
+            color: var(--cream);
+            border-color: var(--sage-green);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="text-2xl font-bold gradient-text">WoolTech</a>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="index.html" class="nav-link text-sm font-medium">Home</a>
+                        <a href="products.html" class="nav-link text-sm font-medium text-sage-green">Products</a>
+                        <a href="index.html#story" class="nav-link text-sm font-medium">Our Story</a>
+                        <a href="index.html#sustainability" class="nav-link text-sm font-medium">Sustainability</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="cart-btn" class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0V19a2 2 0 002 2h7a2 2 0 002-2v-4"></path>
+                        </svg>
+                        <span id="cart-count" class="cart-badge absolute -top-2 -right-2 w-5 h-5 rounded-full text-xs flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-warm-white to-oat">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl lg:text-5xl font-light mb-4 reveal-element">Our Collection</h1>
+                <p class="text-gray-600 max-w-2xl mx-auto reveal-element">
+                    Discover our complete range of wool sneakers, each pair crafted with premium materials and sustainable practices.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="py-8 bg-white border-b">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-wrap gap-4 items-center justify-between">
+                <div class="flex flex-wrap gap-2">
+                    <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium" data-filter="all">
+                        All Products
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium" data-filter="urban">
+                        Urban
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium" data-filter="trail">
+                        Trail
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium" data-filter="performance">
+                        Performance
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium" data-filter="casual">
+                        Casual
+                    </button>
+                </div>
+                <div class="flex items-center gap-4">
+                    <select id="sort-select" class="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sage-green">
+                        <option value="featured">Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="newest">Newest</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <div id="products-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Products will be dynamically loaded here -->
+            </div>
+            
+            <div id="no-products" class="text-center py-16 hidden">
+                <p class="text-gray-500 text-lg">No products found matching your criteria.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="modal-content w-full max-w-4xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-light">Product Details</h3>
+                <button id="close-modal" class="p-2 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <img id="modal-image" src="" alt="" class="w-full h-auto rounded-lg">
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h4 id="modal-title" class="text-2xl font-medium mb-2"></h4>
+                        <p id="modal-price" class="text-3xl font-light mb-4"></p>
+                        <p id="modal-description" class="text-gray-600 leading-relaxed"></p>
+                    </div>
+                    
+                    <div>
+                        <h5 class="text-lg font-medium mb-3">Size</h5>
+                        <div id="modal-sizes" class="flex flex-wrap gap-2">
+                            <!-- Size options will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="text-lg font-medium mb-3">Color</h5>
+                        <div id="modal-colors" class="flex flex-wrap gap-2">
+                            <!-- Color options will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button id="modal-add-to-cart" class="btn-primary flex-1 py-3 rounded-lg font-medium">
+                            Add to Cart
+                        </button>
+                        <button class="btn-secondary px-6 py-3 rounded-lg font-medium">
+                            ♡ Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-medium">Shopping Cart</h3>
+                <button id="close-cart" class="p-2 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+            <p class="text-gray-500 text-center">Your cart is empty</p>
+        </div>
+        <div class="border-t p-6">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-lg font-medium">Total:</span>
+                <span id="cart-total" class="text-xl font-bold">$0</span>
+            </div>
+            <a href="cart.html" class="btn-primary w-full py-3 rounded-lg font-medium text-center block">
+                Checkout
+            </a>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <script src="main.js"></script>
+</body>
+</html>
