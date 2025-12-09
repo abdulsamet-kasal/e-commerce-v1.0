@@ -1,1 +1,1 @@
-fotoğrafları /resources klasörü oluşturduktan sonra içine aktararak kullanabilirsiniz.
+basit e-commerce site şablonu backend yazılıp kullanılabilir.
